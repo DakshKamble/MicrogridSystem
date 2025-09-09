@@ -1,0 +1,13 @@
+# Simplified requirements for Python 3.13 compatibility
+# Use this if the main requirements.txt fails
+
+# Core dependencies with pre-compiled wheels
+fastapi
+uvicorn[standard]
+paho-mqtt
+pydantic
+httpx
+python-dateutil
+python-dotenv
+typing-extensions
+annotated-types
