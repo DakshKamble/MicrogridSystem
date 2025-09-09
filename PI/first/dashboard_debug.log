@@ -1,0 +1,34 @@
+2025-09-10 02:00:19,426 - INFO - 🔧 Initialized MQTT client in session state
+2025-09-10 02:00:19,426 - INFO - 🔧 Initialized MQTT connection status: False
+2025-09-10 02:00:19,426 - INFO - 🔧 Initialized sensor data with default values
+2025-09-10 02:00:19,426 - INFO - 🔧 Initialized zone states with default values
+2025-09-10 02:00:19,433 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/dashboard_debug.log", inode=14646200, flags=18100, id=44481328): is_created, is_file, is_xattr_mod
+2025-09-10 02:00:19,434 - DEBUG - queue_event FileCreatedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/dashboard_debug.log', dest_path='', event_type='created', is_directory=False, is_synthetic=False)
+2025-09-10 02:00:19,445 - INFO - 🔌 MQTT Connect callback triggered with result code: Success
+2025-09-10 02:00:19,450 - DEBUG - queue_event DirModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first', dest_path='', event_type='modified', is_directory=True, is_synthetic=False)
+2025-09-10 02:00:19,520 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/dashboard_debug.log', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:00:19,520 - INFO - ✅ Connected to MQTT broker successfully!
+2025-09-10 02:00:19,521 - INFO - 🌐 Broker: localhost:1883
+2025-09-10 02:00:19,521 - INFO - 📡 Successfully subscribed to microgrid/sensor/bus_voltage (MID: 1)
+2025-09-10 02:00:19,521 - INFO - 📡 Successfully subscribed to microgrid/sensor/shunt_voltage (MID: 2)
+2025-09-10 02:00:19,521 - INFO - 📡 Successfully subscribed to microgrid/sensor/load_voltage (MID: 3)
+2025-09-10 02:00:19,521 - INFO - 📡 Successfully subscribed to microgrid/sensor/current (MID: 4)
+2025-09-10 02:00:19,521 - INFO - 📡 Successfully subscribed to microgrid/sensor/power (MID: 5)
+2025-09-10 02:00:19,521 - INFO - 📡 Successfully subscribed to microgrid/sensor/status (MID: 6)
+2025-09-10 02:00:19,521 - INFO - 🎯 All topic subscriptions completed successfully
+2025-09-10 02:00:24,517 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py", inode=14633645, flags=11400, id=44481455): is_file, is_inode_meta_mod, is_modified
+2025-09-10 02:00:24,518 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:00:38,751 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py", inode=14633645, flags=11400, id=44481782): is_file, is_inode_meta_mod, is_modified
+2025-09-10 02:00:38,752 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:00:54,325 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py", inode=14633645, flags=11400, id=44483319): is_file, is_inode_meta_mod, is_modified
+2025-09-10 02:00:54,325 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:01:17,150 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py", inode=14633645, flags=11400, id=44484148): is_file, is_inode_meta_mod, is_modified
+2025-09-10 02:01:17,150 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:01:31,766 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py", inode=14633645, flags=11400, id=44484510): is_file, is_inode_meta_mod, is_modified
+2025-09-10 02:01:31,769 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:02:00,308 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py", inode=14633645, flags=10400, id=44485837): is_file, is_inode_meta_mod
+2025-09-10 02:02:00,309 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:02:00,318 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py", inode=14633645, flags=11400, id=44485840): is_file, is_inode_meta_mod, is_modified
+2025-09-10 02:02:00,319 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:02:43,448 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py", inode=14633645, flags=11400, id=44486563): is_file, is_inode_meta_mod, is_modified
+2025-09-10 02:02:43,448 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
