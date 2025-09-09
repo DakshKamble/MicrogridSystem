@@ -32,3 +32,154 @@
 2025-09-10 02:02:00,319 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
 2025-09-10 02:02:43,448 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py", inode=14633645, flags=11400, id=44486563): is_file, is_inode_meta_mod, is_modified
 2025-09-10 02:02:43,448 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/streamlit_dashboard.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:03:58,023 - INFO - 🔧 Initialized MQTT client in session state
+2025-09-10 02:03:58,023 - INFO - 🔧 Initialized MQTT connection status: False
+2025-09-10 02:03:58,024 - INFO - 🔧 Initialized sensor data with default values
+2025-09-10 02:03:58,024 - INFO - 🔧 Initialized zone states with default values
+2025-09-10 02:03:58,024 - INFO - 🚀 Setting up MQTT client...
+2025-09-10 02:03:58,024 - INFO -    Broker: localhost
+2025-09-10 02:03:58,024 - INFO -    Port: 1883
+2025-09-10 02:03:58,024 - INFO -    Keepalive: 60
+2025-09-10 02:03:58,024 - INFO - ✅ MQTT client created with callbacks attached
+2025-09-10 02:03:58,024 - INFO - 🔌 Attempting to connect to localhost:1883...
+2025-09-10 02:03:58,028 - INFO - ✅ MQTT connect() call successful
+2025-09-10 02:03:58,028 - INFO - 🔄 Starting MQTT background loop...
+2025-09-10 02:03:58,029 - INFO - ✅ MQTT background loop started
+2025-09-10 02:03:58,029 - INFO - 📝 MQTT client stored in session state
+2025-09-10 02:03:58,029 - INFO - 📡 Expected MQTT topics:
+2025-09-10 02:03:58,029 - INFO -    bus_voltage: microgrid/sensor/bus_voltage
+2025-09-10 02:03:58,029 - INFO -    shunt_voltage: microgrid/sensor/shunt_voltage
+2025-09-10 02:03:58,029 - INFO -    load_voltage: microgrid/sensor/load_voltage
+2025-09-10 02:03:58,029 - INFO -    current: microgrid/sensor/current
+2025-09-10 02:03:58,029 - INFO -    power: microgrid/sensor/power
+2025-09-10 02:03:58,029 - INFO -    status: microgrid/sensor/status
+2025-09-10 02:03:58,040 - INFO - 🔌 MQTT Connect callback triggered with result code: Success
+2025-09-10 02:03:58,041 - INFO - ✅ Connected to MQTT broker successfully!
+2025-09-10 02:03:58,041 - INFO - 🌐 Broker: localhost:1883
+2025-09-10 02:03:58,041 - INFO - 📡 Successfully subscribed to microgrid/sensor/bus_voltage (MID: 1)
+2025-09-10 02:03:58,041 - INFO - 📡 Successfully subscribed to microgrid/sensor/shunt_voltage (MID: 2)
+2025-09-10 02:03:58,041 - INFO - 📡 Successfully subscribed to microgrid/sensor/load_voltage (MID: 3)
+2025-09-10 02:03:58,041 - INFO - 📡 Successfully subscribed to microgrid/sensor/current (MID: 4)
+2025-09-10 02:03:58,041 - INFO - 📡 Successfully subscribed to microgrid/sensor/power (MID: 5)
+2025-09-10 02:03:58,042 - INFO - 📡 Successfully subscribed to microgrid/sensor/status (MID: 6)
+2025-09-10 02:03:58,042 - INFO - 🎯 All topic subscriptions completed successfully
+2025-09-10 02:03:59,726 - INFO - 🔧 Initialized MQTT client in session state
+2025-09-10 02:03:59,726 - INFO - 🔧 Initialized MQTT connection status: False
+2025-09-10 02:03:59,726 - INFO - 🔧 Initialized sensor data with default values
+2025-09-10 02:03:59,726 - INFO - 🔧 Initialized zone states with default values
+2025-09-10 02:03:59,727 - INFO - 🚀 Setting up MQTT client...
+2025-09-10 02:03:59,727 - INFO -    Broker: localhost
+2025-09-10 02:03:59,727 - INFO -    Port: 1883
+2025-09-10 02:03:59,727 - INFO -    Keepalive: 60
+2025-09-10 02:03:59,727 - INFO - ✅ MQTT client created with callbacks attached
+2025-09-10 02:03:59,727 - INFO - 🔌 Attempting to connect to localhost:1883...
+2025-09-10 02:03:59,728 - INFO - ✅ MQTT connect() call successful
+2025-09-10 02:03:59,728 - INFO - 🔄 Starting MQTT background loop...
+2025-09-10 02:03:59,729 - INFO - ✅ MQTT background loop started
+2025-09-10 02:03:59,729 - INFO - 📝 MQTT client stored in session state
+2025-09-10 02:03:59,729 - INFO - 📡 Expected MQTT topics:
+2025-09-10 02:03:59,729 - INFO - 🔌 MQTT Connect callback triggered with result code: Success
+2025-09-10 02:03:59,729 - INFO -    bus_voltage: microgrid/sensor/bus_voltage
+2025-09-10 02:03:59,729 - INFO - ✅ Connected to MQTT broker successfully!
+2025-09-10 02:03:59,730 - INFO -    shunt_voltage: microgrid/sensor/shunt_voltage
+2025-09-10 02:03:59,730 - INFO - 🌐 Broker: localhost:1883
+2025-09-10 02:03:59,730 - INFO -    load_voltage: microgrid/sensor/load_voltage
+2025-09-10 02:03:59,730 - INFO - 📡 Successfully subscribed to microgrid/sensor/bus_voltage (MID: 1)
+2025-09-10 02:03:59,730 - INFO -    current: microgrid/sensor/current
+2025-09-10 02:03:59,730 - INFO - 📡 Successfully subscribed to microgrid/sensor/shunt_voltage (MID: 2)
+2025-09-10 02:03:59,730 - INFO -    power: microgrid/sensor/power
+2025-09-10 02:03:59,730 - INFO -    status: microgrid/sensor/status
+2025-09-10 02:03:59,730 - INFO - 📡 Successfully subscribed to microgrid/sensor/load_voltage (MID: 3)
+2025-09-10 02:03:59,744 - INFO - 📡 Successfully subscribed to microgrid/sensor/current (MID: 4)
+2025-09-10 02:03:59,745 - INFO - 📡 Successfully subscribed to microgrid/sensor/power (MID: 5)
+2025-09-10 02:03:59,745 - INFO - 📡 Successfully subscribed to microgrid/sensor/status (MID: 6)
+2025-09-10 02:03:59,745 - INFO - 🎯 All topic subscriptions completed successfully
+2025-09-10 02:04:00,658 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:04:05,729 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:04:10,807 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:04:15,865 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:04:20,936 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:04:26,006 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:04:29,753 - INFO - 🔧 Initialized MQTT client in session state
+2025-09-10 02:04:29,753 - INFO - 🔧 Initialized MQTT connection status: False
+2025-09-10 02:04:29,754 - INFO - 🔧 Initialized sensor data with default values
+2025-09-10 02:04:29,754 - INFO - 🔧 Initialized zone states with default values
+2025-09-10 02:04:29,755 - INFO - 🚀 Setting up MQTT client...
+2025-09-10 02:04:29,755 - INFO -    Broker: localhost
+2025-09-10 02:04:29,755 - INFO -    Port: 1883
+2025-09-10 02:04:29,755 - INFO -    Keepalive: 60
+2025-09-10 02:04:29,755 - INFO - ✅ MQTT client created with callbacks attached
+2025-09-10 02:04:29,755 - INFO - 🔌 Attempting to connect to localhost:1883...
+2025-09-10 02:04:29,757 - INFO - ✅ MQTT connect() call successful
+2025-09-10 02:04:29,757 - INFO - 🔄 Starting MQTT background loop...
+2025-09-10 02:04:29,758 - INFO - 🔌 MQTT Connect callback triggered with result code: Success
+2025-09-10 02:04:29,758 - INFO - ✅ MQTT background loop started
+2025-09-10 02:04:29,758 - INFO - ✅ Connected to MQTT broker successfully!
+2025-09-10 02:04:29,759 - INFO - 🌐 Broker: localhost:1883
+2025-09-10 02:04:29,759 - INFO - 📝 MQTT client stored in session state
+2025-09-10 02:04:29,759 - INFO - 📡 Successfully subscribed to microgrid/sensor/bus_voltage (MID: 1)
+2025-09-10 02:04:29,759 - INFO - 📡 Expected MQTT topics:
+2025-09-10 02:04:29,759 - INFO -    bus_voltage: microgrid/sensor/bus_voltage
+2025-09-10 02:04:29,760 - INFO -    shunt_voltage: microgrid/sensor/shunt_voltage
+2025-09-10 02:04:29,760 - INFO -    load_voltage: microgrid/sensor/load_voltage
+2025-09-10 02:04:29,760 - INFO -    current: microgrid/sensor/current
+2025-09-10 02:04:29,760 - INFO -    power: microgrid/sensor/power
+2025-09-10 02:04:29,760 - INFO -    status: microgrid/sensor/status
+2025-09-10 02:04:29,760 - INFO - 📡 Successfully subscribed to microgrid/sensor/shunt_voltage (MID: 2)
+2025-09-10 02:04:29,772 - INFO - 📡 Successfully subscribed to microgrid/sensor/load_voltage (MID: 3)
+2025-09-10 02:04:29,772 - INFO - 📡 Successfully subscribed to microgrid/sensor/current (MID: 4)
+2025-09-10 02:04:29,772 - INFO - 📡 Successfully subscribed to microgrid/sensor/power (MID: 5)
+2025-09-10 02:04:29,773 - INFO - 📡 Successfully subscribed to microgrid/sensor/status (MID: 6)
+2025-09-10 02:04:29,773 - INFO - 🎯 All topic subscriptions completed successfully
+2025-09-10 02:04:31,797 - INFO - 🔧 Initialized MQTT client in session state
+2025-09-10 02:04:31,798 - INFO - 🔧 Initialized MQTT connection status: False
+2025-09-10 02:04:31,798 - INFO - 🔧 Initialized sensor data with default values
+2025-09-10 02:04:31,798 - INFO - 🔧 Initialized zone states with default values
+2025-09-10 02:04:31,798 - INFO - 🚀 Setting up MQTT client...
+2025-09-10 02:04:31,798 - INFO -    Broker: localhost
+2025-09-10 02:04:31,798 - INFO -    Port: 1883
+2025-09-10 02:04:31,799 - INFO -    Keepalive: 60
+2025-09-10 02:04:31,799 - INFO - ✅ MQTT client created with callbacks attached
+2025-09-10 02:04:31,799 - INFO - 🔌 Attempting to connect to localhost:1883...
+2025-09-10 02:04:31,800 - INFO - ✅ MQTT connect() call successful
+2025-09-10 02:04:31,800 - INFO - 🔄 Starting MQTT background loop...
+2025-09-10 02:04:31,801 - INFO - ✅ MQTT background loop started
+2025-09-10 02:04:31,801 - INFO - 🔌 MQTT Connect callback triggered with result code: Success
+2025-09-10 02:04:31,801 - INFO - 📝 MQTT client stored in session state
+2025-09-10 02:04:31,801 - INFO - ✅ Connected to MQTT broker successfully!
+2025-09-10 02:04:31,801 - INFO - 📡 Expected MQTT topics:
+2025-09-10 02:04:31,801 - INFO - 🌐 Broker: localhost:1883
+2025-09-10 02:04:31,801 - INFO -    bus_voltage: microgrid/sensor/bus_voltage
+2025-09-10 02:04:31,801 - INFO - 📡 Successfully subscribed to microgrid/sensor/bus_voltage (MID: 1)
+2025-09-10 02:04:31,802 - INFO -    shunt_voltage: microgrid/sensor/shunt_voltage
+2025-09-10 02:04:31,802 - INFO -    load_voltage: microgrid/sensor/load_voltage
+2025-09-10 02:04:31,802 - INFO - 📡 Successfully subscribed to microgrid/sensor/shunt_voltage (MID: 2)
+2025-09-10 02:04:31,802 - INFO -    current: microgrid/sensor/current
+2025-09-10 02:04:31,802 - INFO -    power: microgrid/sensor/power
+2025-09-10 02:04:31,802 - INFO - 📡 Successfully subscribed to microgrid/sensor/load_voltage (MID: 3)
+2025-09-10 02:04:31,802 - INFO -    status: microgrid/sensor/status
+2025-09-10 02:04:31,802 - INFO - 📡 Successfully subscribed to microgrid/sensor/current (MID: 4)
+2025-09-10 02:04:31,805 - INFO - 📡 Successfully subscribed to microgrid/sensor/power (MID: 5)
+2025-09-10 02:04:31,817 - INFO - 📡 Successfully subscribed to microgrid/sensor/status (MID: 6)
+2025-09-10 02:04:31,817 - INFO - 🎯 All topic subscriptions completed successfully
+2025-09-10 02:04:36,849 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:04:40,739 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:04:42,020 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:04:47,082 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:04:52,154 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:04:57,239 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:05:02,292 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:05:07,341 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:05:12,396 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:05:17,454 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:05:22,511 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:05:27,553 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:05:32,599 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:05:37,669 - DEBUG - 🔄 MQTT client already exists, skipping setup
+2025-09-10 02:05:41,712 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/mqtt_listener.py", inode=14493721, flags=11400, id=44505420): is_file, is_inode_meta_mod, is_modified
+2025-09-10 02:05:41,713 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/mqtt_listener.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:05:42,227 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/mqtt_listener.py", inode=14493721, flags=11400, id=44505502): is_file, is_inode_meta_mod, is_modified
+2025-09-10 02:05:42,227 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/mqtt_listener.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:05:42,397 - DEBUG - NativeEvent(path="/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/mqtt_listener.py", inode=14493721, flags=11400, id=44505508): is_file, is_inode_meta_mod, is_modified
+2025-09-10 02:05:42,397 - DEBUG - queue_event FileModifiedEvent(src_path='/Users/dakshkamble/Desktop/MicrogridSystem/PI/first/mqtt_listener.py', dest_path='', event_type='modified', is_directory=False, is_synthetic=False)
+2025-09-10 02:05:42,745 - DEBUG - 🔄 MQTT client already exists, skipping setup
