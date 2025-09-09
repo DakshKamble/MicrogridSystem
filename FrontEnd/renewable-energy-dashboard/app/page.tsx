@@ -16,9 +16,6 @@ import {
   Settings,
   Activity,
   Power,
-  ArrowRight,
-  ArrowDown,
-  ArrowUp,
 } from "lucide-react"
 
 export default function RenewableEnergyDashboard() {
@@ -55,7 +52,7 @@ export default function RenewableEnergyDashboard() {
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* System Status */}
         <Card className="lg:col-span-1">
           <CardHeader>
@@ -143,60 +140,8 @@ export default function RenewableEnergyDashboard() {
           </CardContent>
         </Card>
 
-        {/* Power Flow */}
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-primary" />
-              Power Flow
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {/* Generation to Battery */}
-              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Sun className="w-4 h-4 text-accent" />
-                  <span className="text-sm">Generation</span>
-                </div>
-                <ArrowRight className="w-4 h-4 text-primary animate-pulse" />
-                <div className="flex items-center gap-2">
-                  <Battery className="w-4 h-4 text-primary" />
-                  <span className="text-sm">Storage</span>
-                </div>
-              </div>
-
-              {/* Battery to Load */}
-              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Battery className="w-4 h-4 text-primary" />
-                  <span className="text-sm">Storage</span>
-                </div>
-                <ArrowDown className="w-4 h-4 text-accent animate-pulse" />
-                <div className="flex items-center gap-2">
-                  <Home className="w-4 h-4 text-foreground" />
-                  <span className="text-sm">Load</span>
-                </div>
-              </div>
-
-              {/* Grid Export */}
-              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-primary" />
-                  <span className="text-sm">Excess</span>
-                </div>
-                <ArrowUp className="w-4 h-4 text-accent animate-pulse" />
-                <div className="flex items-center gap-2">
-                  <Power className="w-4 h-4 text-foreground" />
-                  <span className="text-sm">Grid</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Distribution Zones */}
-        <Card className="lg:col-span-3">
+        <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Home className="w-5 h-5 text-primary" />
