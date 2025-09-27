@@ -30,39 +30,38 @@ A responsive web dashboard that displays real-time sensor data from your FastAPI
    npm install
    ```
 
-3. **Configure API endpoint (Important!):**
+3. **API Configuration:**
    
-   Edit `app/page.tsx` and update the `API_BASE_URL`:
-   ```typescript
-   const API_BASE_URL = process.env.NODE_ENV === 'production' 
-     ? 'http://192.168.1.100:8000' // Change this to your Pi's IP
-     : 'http://localhost:8000'
-   ```
-   
-   **Find your Raspberry Pi's IP address:**
-   ```bash
-   # On Raspberry Pi, run:
-   hostname -I
-   # Or:
-   ip addr show | grep "inet " | grep -v 127.0.0.1
-   ```
+   Since both the FastAPI server and Next.js dashboard run on the same Raspberry Pi, the configuration is already set to use `localhost:8000`. No changes needed!
 
 ## Running the Dashboard
 
-### Development Mode (with hot reload)
+### Option 1: Use the automated startup script (Recommended)
+```bash
+# Make script executable (run once)
+chmod +x start_services.sh
+
+# Start both FastAPI and Dashboard
+./start_services.sh
+```
+
+### Option 2: Manual startup
+
+**Terminal 1 - Start FastAPI server:**
+```bash
+source venv/bin/activate
+uvicorn mqtt_fastapi_server:app --host 0.0.0.0 --port 8000
+```
+
+**Terminal 2 - Start Dashboard:**
 ```bash
 npm run dev
 ```
 
-### Production Mode
-```bash
-npm run build
-npm start
-```
-
-The dashboard will be available at:
-- **Local access**: `http://localhost:3000`
-- **Network access**: `http://[YOUR_COMPUTER_IP]:3000`
+### Access Points
+The services will be available at:
+- **Dashboard**: `http://localhost:3000` (local) or `http://[PI_IP]:3000` (network)
+- **FastAPI**: `http://localhost:8000` (local) or `http://[PI_IP]:8000` (network)
 
 ## Network Access Setup
 

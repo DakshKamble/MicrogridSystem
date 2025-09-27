@@ -8,7 +8,9 @@
 const https = require('https');
 const http = require('http');
 
-const API_URL = 'http://localhost:8000/api/v1/node1/zone1';
+// Configuration - Your Raspberry Pi's IP address
+const PI_IP = '192.168.0.105'  // Your actual Raspberry Pi IP address
+const API_URL = `http://${PI_IP}:8000/api/v1/node1/zone1`;
 
 console.log('🧪 Testing FastAPI server connection...');
 console.log(`📡 Connecting to: ${API_URL}`);
@@ -79,7 +81,7 @@ function testAPI() {
 
 // Test status endpoint first
 function testStatus() {
-    const statusURL = 'http://localhost:8000/api/v1/status';
+    const statusURL = `http://${PI_IP}:8000/api/v1/status`;
     console.log(`📊 Testing status endpoint: ${statusURL}`);
     
     const url = new URL(statusURL);

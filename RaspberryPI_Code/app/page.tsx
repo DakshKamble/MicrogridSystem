@@ -13,8 +13,19 @@ interface SensorData {
   received_at?: string
 }
 
-// API configuration - both dashboard and FastAPI running on same Raspberry Pi
-const API_BASE_URL = 'http://localhost:8000' // Local connection since both services are on same Pi
+// Dynamic API configuration - Detects if accessing locally or remotely
+const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    // If accessing via localhost or 127.0.0.1, use localhost for API
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:8000'
+    }
+    // If accessing via IP address (from another device), use same IP for API
+    return `http://${window.location.hostname}:8000`
+  }
+  // Fallback for server-side rendering
+  return 'http://localhost:8000'
+}
 
 export default function Dashboard() {
   const [sensorData, setSensorData] = useState<SensorData | null>(null)
@@ -22,12 +33,13 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [isOnline, setIsOnline] = useState<boolean>(false)
+  const [apiBaseUrl, setApiBaseUrl] = useState<string>('http://localhost:8000')
 
   // Function to fetch data from FastAPI backend
   const fetchData = async () => {
     try {
       setError(null)
-      const response = await fetch(`${API_BASE_URL}/api/v1/node1/zone1`, {
+      const response = await fetch(`${apiBaseUrl}/api/v1/node1/zone1`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -59,17 +71,25 @@ export default function Dashboard() {
     fetchData()
   }
 
+  // Set API base URL based on current hostname
+  useEffect(() => {
+    setApiBaseUrl(getApiBaseUrl())
+  }, [])
+
   // Auto-refresh effect - fetch data every 5 seconds
   useEffect(() => {
-    // Initial fetch
-    fetchData()
+    // Only start fetching after API URL is set
+    if (apiBaseUrl) {
+      // Initial fetch
+      fetchData()
 
-    // Set up interval for auto-refresh
-    const interval = setInterval(fetchData, 5000) // 5 seconds
+      // Set up interval for auto-refresh
+      const interval = setInterval(fetchData, 5000) // 5 seconds
 
-    // Cleanup interval on component unmount
-    return () => clearInterval(interval)
-  }, [])
+      // Cleanup interval on component unmount
+      return () => clearInterval(interval)
+    }
+  }, [apiBaseUrl])
 
   // Format timestamp for display
   const formatTimestamp = (timestamp: number): string => {
@@ -143,7 +163,7 @@ export default function Dashboard() {
             </div>
             <p className="text-red-600 mt-1 text-sm">{error}</p>
             <p className="text-red-600 mt-1 text-xs">
-              Make sure the FastAPI server is running on {API_BASE_URL}
+              Make sure the FastAPI server is running on {apiBaseUrl}
             </p>
           </div>
         )}
@@ -266,7 +286,7 @@ export default function Dashboard() {
             <div>
               <p className="text-yellow-800 font-medium text-sm">API Configuration</p>
               <p className="text-yellow-700 text-sm mt-1">
-                Currently connecting to: <code className="bg-yellow-100 px-1 rounded">{API_BASE_URL}</code>
+                Currently connecting to: <code className="bg-yellow-100 px-1 rounded">{apiBaseUrl}</code>
               </p>
               <p className="text-yellow-700 text-sm">
                 Data refreshes automatically every 5 seconds
