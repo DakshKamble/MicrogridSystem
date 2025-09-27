@@ -1,28 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable standalone output for easier deployment
-  output: 'standalone',
-  
-  // Disable strict mode for development
-  reactStrictMode: true,
-  
-  // Configure the server to listen on all interfaces
+  // Allow connections from any IP address for local network access
   experimental: {
-    appDir: false // Use pages directory
+    serverComponentsExternalPackages: []
   },
-  
-  // Add CORS headers for API routes if needed
-  async headers() {
-    return [
-      {
-        source: '/api/:path*',
-        headers: [
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE, OPTIONS' },
-          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
-        ],
-      },
-    ]
+  // Configure for local network access
+  env: {
+    CUSTOM_KEY: 'microgrid-dashboard',
   }
 }
 

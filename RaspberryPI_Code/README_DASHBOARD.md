@@ -1,274 +1,248 @@
-# Microgrid Dashboard - Next.js Web Interface
+# Microgrid Dashboard - Next.js Web Application
 
-A responsive Next.js dashboard that displays real-time sensor data from your Raspberry Pi microgrid system via the FastAPI backend.
+A responsive web dashboard that displays real-time sensor data from your FastAPI backend running on Raspberry Pi. The dashboard automatically refreshes data every 5 seconds and can be accessed from any device on your local network.
 
 ## Features
 
-- 🔄 **Auto-refresh** every 5 seconds
-- 📱 **Responsive design** for mobile and desktop
-- 🎯 **Real-time data** from MQTT sensors
-- 🔘 **Manual refresh** button
-- 📊 **Clean card and table layouts**
-- 🌐 **Network accessible** from any device on the same WiFi
+- 🔄 **Auto-refresh**: Data updates every 5 seconds automatically
+- 📱 **Responsive Design**: Works on desktop, tablet, and mobile devices
+- 🎯 **Real-time Data**: Displays current, voltage, power, and timestamp
+- 🔧 **Manual Refresh**: Click button to manually reload data
+- 🌐 **Network Access**: Accessible from any device on the same WiFi network
+- ⚡ **Fast Loading**: Built with Next.js for optimal performance
+- 🎨 **Clean UI**: Minimal design with Tailwind CSS
 
 ## Prerequisites
 
-1. **FastAPI server** running on Raspberry Pi (port 8000)
-2. **Node.js 16+** installed on the device running the dashboard
-3. **Network connectivity** between dashboard device and Raspberry Pi
+- Node.js 18+ installed
+- FastAPI backend running on Raspberry Pi (port 8000)
+- Both devices on the same WiFi network
 
-## Quick Setup
+## Installation
 
-### 1. Install Dependencies
+1. **Navigate to the project directory:**
+   ```bash
+   cd /path/to/dashboard/project
+   ```
 
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure API endpoint (Important!):**
+   
+   Edit `app/page.tsx` and update the `API_BASE_URL`:
+   ```typescript
+   const API_BASE_URL = process.env.NODE_ENV === 'production' 
+     ? 'http://192.168.1.100:8000' // Change this to your Pi's IP
+     : 'http://localhost:8000'
+   ```
+   
+   **Find your Raspberry Pi's IP address:**
+   ```bash
+   # On Raspberry Pi, run:
+   hostname -I
+   # Or:
+   ip addr show | grep "inet " | grep -v 127.0.0.1
+   ```
+
+## Running the Dashboard
+
+### Development Mode (with hot reload)
 ```bash
-npm install
-```
-
-### 2. Configure API Endpoint
-
-Create a `.env.local` file (copy from `env.example`):
-
-```bash
-cp env.example .env.local
-```
-
-Edit `.env.local` and set your Raspberry Pi's IP address:
-
-```env
-NEXT_PUBLIC_API_URL=http://192.168.1.100:8000
-```
-
-**Replace `192.168.1.100` with your actual Raspberry Pi IP address.**
-
-### 3. Find Your Raspberry Pi IP Address
-
-On the Raspberry Pi, run:
-
-```bash
-hostname -I
-```
-
-Or check your router's admin panel for connected devices.
-
-### 4. Start the Dashboard
-
-```bash
-# Development mode (with hot reload)
 npm run dev
+```
 
-# Production mode
+### Production Mode
+```bash
 npm run build
-npm run start
+npm start
 ```
 
 The dashboard will be available at:
 - **Local access**: `http://localhost:3000`
-- **Network access**: `http://YOUR_COMPUTER_IP:3000`
+- **Network access**: `http://[YOUR_COMPUTER_IP]:3000`
 
-## Accessing from Other Devices
+## Network Access Setup
 
-### Find Your Dashboard Computer's IP Address
+To access the dashboard from other devices on your network:
 
-**Windows:**
-```cmd
-ipconfig
-```
+1. **Find your computer's IP address:**
+   
+   **Windows:**
+   ```cmd
+   ipconfig | findstr "IPv4"
+   ```
+   
+   **macOS/Linux:**
+   ```bash
+   ifconfig | grep "inet " | grep -v 127.0.0.1
+   ```
 
-**macOS/Linux:**
-```bash
-ifconfig
-```
+2. **Access from other devices:**
+   ```
+   http://[YOUR_COMPUTER_IP]:3000
+   ```
+   
+   Example: `http://192.168.1.50:3000`
 
-Look for your WiFi adapter's IP address (usually starts with 192.168.x.x or 10.x.x.x).
-
-### Access from Mobile/Tablet
-
-Once you know your computer's IP address, you can access the dashboard from any device on the same WiFi network:
-
-```
-http://YOUR_COMPUTER_IP:3000
-```
-
-For example: `http://192.168.1.150:3000`
+3. **Firewall Configuration (if needed):**
+   
+   **Windows:** Allow port 3000 through Windows Firewall
+   **macOS:** System Preferences > Security & Privacy > Firewall
+   **Linux:** `sudo ufw allow 3000`
 
 ## Project Structure
 
 ```
 microgrid-dashboard/
-├── pages/
-│   ├── index.tsx          # Main dashboard page
-│   └── _app.tsx           # Next.js app configuration
-├── styles/
-│   ├── globals.css        # Global styles
-│   └── Dashboard.module.css # Dashboard-specific styles
-├── package.json           # Dependencies and scripts
-├── next.config.js         # Next.js configuration
-├── env.example            # Environment variables example
-└── README_DASHBOARD.md    # This file
+├── app/
+│   ├── globals.css          # Global styles and Tailwind CSS
+│   ├── layout.tsx           # Root layout component
+│   └── page.tsx             # Main dashboard component
+├── package.json             # Dependencies and scripts
+├── next.config.js           # Next.js configuration
+├── tailwind.config.js       # Tailwind CSS configuration
+├── postcss.config.js        # PostCSS configuration
+└── README_DASHBOARD.md      # This file
 ```
 
-## Dashboard Features
+## Dashboard Features Explained
 
-### Data Display
-- **Node Information**: Node ID and Zone ID
-- **Electrical Measurements**: Current (mA), Voltage (V), Power (mW)
-- **Timing**: Sensor timestamp and received time
-- **Connection Status**: API endpoint and refresh status
+### 1. **Real-time Data Display**
+- Shows Node ID, Zone ID, Current (mA), Voltage (V), Power (mW), and Timestamp
+- Data automatically updates every 5 seconds
+- Connection status indicator (green = connected, red = disconnected)
 
-### Responsive Layout
-- **Desktop**: Card grid layout with data table
-- **Tablet**: Responsive card layout
-- **Mobile**: Single column with optimized spacing
+### 2. **Responsive Layout**
+- **Mobile**: Card-based layout with large, easy-to-read values
+- **Desktop**: Table layout with all data in a structured format
+- **Tablet**: Adapts between mobile and desktop layouts
 
-### Auto-Refresh
-- Fetches new data every 5 seconds automatically
-- Manual refresh button for immediate updates
-- Shows last update timestamp
-- Error handling with troubleshooting tips
+### 3. **Manual Refresh**
+- Blue "Refresh Data" button to manually reload data
+- Shows spinning animation while loading
+- Button is disabled during refresh to prevent multiple requests
+
+### 4. **Error Handling**
+- Displays clear error messages when API is unreachable
+- Shows connection status and last update time
+- Provides troubleshooting information
+
+## API Integration
+
+The dashboard connects to your FastAPI backend at:
+```
+GET /api/v1/node1/zone1
+```
+
+Expected JSON response format:
+```json
+{
+    "node_id": "node1",
+    "zone_id": "zone1",
+    "timestamp": 560625,
+    "current_mA": 6.3,
+    "voltage_V": 3.308,
+    "power_mW": 20,
+    "received_at": "2024-01-01T12:00:00.000Z"
+}
+```
 
 ## Troubleshooting
 
-### "Connection Error" Message
+### Common Issues
 
-1. **Check FastAPI server**: Ensure it's running on the Raspberry Pi
+1. **"Connection Error" message:**
+   - Verify FastAPI server is running on Raspberry Pi
+   - Check IP address configuration in `app/page.tsx`
+   - Ensure both devices are on the same network
+   - Test API directly: `curl http://[PI_IP]:8000/api/v1/node1/zone1`
+
+2. **Dashboard not accessible from other devices:**
+   - Check firewall settings on host computer
+   - Verify computer's IP address is correct
+   - Ensure Next.js is running with `-H 0.0.0.0` flag (included in scripts)
+
+3. **Data not updating:**
+   - Check browser console for JavaScript errors
+   - Verify MQTT messages are being received by FastAPI server
+   - Check network connectivity between devices
+
+### Testing the Complete System
+
+1. **Start FastAPI server on Raspberry Pi:**
    ```bash
    # On Raspberry Pi
-   curl http://localhost:8000/api/v1/status
+   source venv/bin/activate
+   uvicorn mqtt_fastapi_server:app --host 0.0.0.0 --port 8000
    ```
 
-2. **Verify IP address**: Make sure `.env.local` has the correct Raspberry Pi IP
+2. **Start Dashboard on your computer:**
    ```bash
-   # Test from dashboard computer
-   curl http://RASPBERRY_PI_IP:8000/api/v1/node1/zone1
+   # On your computer
+   npm run dev
    ```
 
-3. **Check network connectivity**:
-   ```bash
-   ping RASPBERRY_PI_IP
-   ```
-
-4. **Firewall settings**: Ensure port 8000 is open on the Raspberry Pi
-   ```bash
-   # On Raspberry Pi (if using ufw)
-   sudo ufw allow 8000
-   ```
-
-### "No data available yet" Message
-
-1. **Check MQTT messages**: Ensure sensor data is being published
+3. **Send test MQTT message:**
    ```bash
    # On Raspberry Pi
-   mosquitto_sub -h localhost -t "/node1/zone1"
-   ```
-
-2. **Test MQTT publishing**:
-   ```bash
    mosquitto_pub -h localhost -t "/node1/zone1" -m '{
-     "node_id": "node1",
-     "zone_id": "zone1",
-     "timestamp": 560625,
-     "current_mA": 6.3,
-     "voltage_V": 3.308,
-     "power_mW": 20
+       "node_id": "node1",
+       "zone_id": "zone1",
+       "timestamp": 560625,
+       "current_mA": 6.3,
+       "voltage_V": 3.308,
+       "power_mW": 20
    }'
    ```
 
-### Dashboard Not Accessible from Other Devices
-
-1. **Check firewall**: Ensure port 3000 is open on the dashboard computer
-2. **Verify network**: All devices must be on the same WiFi network
-3. **Test with IP**: Try accessing using the computer's IP address instead of localhost
-
-## Development
-
-### Running in Development Mode
-
-```bash
-npm run dev
-```
-
-This starts the development server with:
-- Hot reload for code changes
-- Detailed error messages
-- Source maps for debugging
-
-### Building for Production
-
-```bash
-npm run build
-npm run start
-```
-
-### Environment Variables
-
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_API_URL` | FastAPI backend URL | `http://192.168.1.100:8000` |
-
-**Note**: Variables prefixed with `NEXT_PUBLIC_` are available in the browser.
+4. **Access dashboard from any device:**
+   ```
+   http://[YOUR_COMPUTER_IP]:3000
+   ```
 
 ## Customization
 
 ### Changing Refresh Interval
-
-Edit `pages/index.tsx`, line with `setInterval(fetchData, 5000)`:
-
+Edit `app/page.tsx`, line ~65:
 ```typescript
-// Change 5000 to desired milliseconds (e.g., 10000 for 10 seconds)
-const interval = setInterval(fetchData, 10000);
+const interval = setInterval(fetchData, 5000) // Change 5000 to desired milliseconds
 ```
 
-### Adding New Data Fields
+### Adding More Nodes/Zones
+To support multiple nodes, you can:
+1. Create additional API endpoints in FastAPI
+2. Add tabs or dropdown selection in the dashboard
+3. Modify the fetch function to accept different endpoints
 
-1. Update the `SensorData` interface in `pages/index.tsx`
-2. Add new rows to the card layout and table
-3. Update styling in `styles/Dashboard.module.css` if needed
+### Styling Modifications
+- Edit `app/globals.css` for global styles
+- Modify `tailwind.config.js` for custom colors/themes
+- Update component classes in `app/page.tsx` for layout changes
 
-### Styling
+## Production Deployment
 
-- **Global styles**: `styles/globals.css`
-- **Dashboard styles**: `styles/Dashboard.module.css`
-- **CSS Modules** are used for component-specific styling
+For production deployment on a server:
 
-## API Integration
+1. **Build the application:**
+   ```bash
+   npm run build
+   ```
 
-The dashboard expects the FastAPI backend to provide:
+2. **Start production server:**
+   ```bash
+   npm start
+   ```
 
-### Endpoint: `GET /api/v1/node1/zone1`
-
-**Response format:**
-```json
-{
-  "node_id": "node1",
-  "zone_id": "zone1",
-  "timestamp": 560625,
-  "current_mA": 6.3,
-  "voltage_V": 3.308,
-  "power_mW": 20,
-  "received_at": "2024-01-01T12:00:00.000Z"
-}
-```
-
-### Error Handling
-
-- **404**: No data available yet
-- **Network errors**: Connection issues
-- **Timeout**: Request takes too long
-
-## Performance
-
-- **Auto-refresh**: 5-second intervals
-- **Request timeout**: 30 seconds
-- **Bundle size**: Optimized for fast loading
-- **Mobile performance**: Responsive design with touch-friendly controls
-
-## Security Notes
-
-- Dashboard runs on local network only
-- No authentication required (suitable for internal use)
-- API endpoint configured via environment variables
-- No sensitive data stored in browser
+3. **Use PM2 for process management (optional):**
+   ```bash
+   npm install -g pm2
+   pm2 start "npm start" --name microgrid-dashboard
+   pm2 startup
+   pm2 save
+   ```
 
 ## License
 
