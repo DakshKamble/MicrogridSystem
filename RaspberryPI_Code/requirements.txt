@@ -1,14 +1,14 @@
-# MQTT FastAPI Server Dependencies
-# Core dependencies for the microgrid monitoring system
+# Requirements for Streamlit Dashboard
+# For Raspberry Pi Microgrid System
 
-# FastAPI and web server
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
+# Core dashboard framework
+streamlit>=1.28.0
 
-# MQTT client
-paho-mqtt==1.6.1
+# HTTP requests for API communication
+requests>=2.31.0
 
-# Additional useful dependencies
-python-multipart==0.0.6  # For form data support if needed later
-
-# Note: fastapi includes python-cors by default, no need to install separately
+# Note: These are the minimal requirements for the dashboard
+# The FastAPI server has its own requirements:
+# - fastapi
+# - uvicorn
+# - paho-mqtt
