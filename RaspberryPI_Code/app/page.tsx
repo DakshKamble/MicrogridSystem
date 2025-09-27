@@ -28,32 +28,69 @@ const getApiBaseUrl = () => {
 }
 
 export default function Dashboard() {
-  const [sensorData, setSensorData] = useState<SensorData | null>(null)
+  // Individual zone data states
+  const [sensorData, setSensorData] = useState<SensorData | null>(null) // Zone 1 (existing)
+  const [zone2Data, setZone2Data] = useState<SensorData | null>(null)
+  const [zone3Data, setZone3Data] = useState<SensorData | null>(null)
+  
+  // Total power calculation state - Sum of power_mW from all three zones
+  const [totalPower, setTotalPower] = useState<number>(0)
+  
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [isOnline, setIsOnline] = useState<boolean>(false)
   const [apiBaseUrl, setApiBaseUrl] = useState<string>('http://localhost:8000')
 
-  // Function to fetch data from FastAPI backend
+  // Function to fetch data from all three zones and calculate total power
   const fetchData = async () => {
     try {
       setError(null)
-      const response = await fetch(`${apiBaseUrl}/api/v1/node1/zone1`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // Add timeout
-        signal: AbortSignal.timeout(5000)
-      })
+      
+      // Fetch data from all three zones simultaneously using Promise.all
+      const [zone1Response, zone2Response, zone3Response] = await Promise.all([
+        fetch(`${apiBaseUrl}/api/v1/node1/zone1`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(5000)
+        }),
+        fetch(`${apiBaseUrl}/api/v1/node1/zone2`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(5000)
+        }),
+        fetch(`${apiBaseUrl}/api/v1/node1/zone3`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(5000)
+        })
+      ])
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+      // Check if all responses are OK
+      if (!zone1Response.ok || !zone2Response.ok || !zone3Response.ok) {
+        const failedZones = []
+        if (!zone1Response.ok) failedZones.push('Zone 1')
+        if (!zone2Response.ok) failedZones.push('Zone 2')
+        if (!zone3Response.ok) failedZones.push('Zone 3')
+        throw new Error(`HTTP error in ${failedZones.join(', ')}`)
       }
 
-      const data: SensorData = await response.json()
-      setSensorData(data)
+      // Parse JSON data from all zones
+      const [zone1Data, zone2Data, zone3Data] = await Promise.all([
+        zone1Response.json(),
+        zone2Response.json(),
+        zone3Response.json()
+      ])
+
+      // Update individual zone states
+      setSensorData(zone1Data) // Zone 1 (maintaining existing variable name)
+      setZone2Data(zone2Data)
+      setZone3Data(zone3Data)
+
+      // Calculate total power - Sum of power_mW from all three zones
+      const calculatedTotalPower = (zone1Data.power_mW || 0) + (zone2Data.power_mW || 0) + (zone3Data.power_mW || 0)
+      setTotalPower(calculatedTotalPower)
+
       setLastUpdated(new Date())
       setIsOnline(true)
       setLoading(false)
@@ -116,7 +153,7 @@ export default function Dashboard() {
             Microgrid Dashboard
           </h1>
           <p className="text-gray-600 text-lg">
-            Real-time sensor monitoring for Node 1, Zone 1
+            Real-time sensor monitoring for Node 1, All Zones
           </p>
           
           {/* Status indicator */}
@@ -152,6 +189,48 @@ export default function Dashboard() {
           </button>
         </div>
 
+        {/* Total Power Section - Displayed prominently at the top */}
+        {/* This section shows the sum of power draw from all three zones */}
+        {(sensorData || zone2Data || zone3Data) && (
+          <div className="mb-8">
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl shadow-lg p-6 text-white">
+              <div className="text-center">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+                  Total Power Consumption
+                </h2>
+                <div className="text-4xl sm:text-6xl font-extrabold mb-2">
+                  {totalPower.toFixed(1)} <span className="text-2xl sm:text-3xl font-semibold">mW</span>
+                </div>
+                <p className="text-orange-100 text-sm sm:text-base">
+                  Combined power draw from all zones • Updates every 5 seconds
+                </p>
+                
+                {/* Individual zone breakdown - responsive layout */}
+                <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="bg-white bg-opacity-20 rounded-lg p-3">
+                    <div className="text-sm font-medium text-orange-100">Zone 1</div>
+                    <div className="text-xl font-bold">
+                      {sensorData ? `${sensorData.power_mW} mW` : 'N/A'}
+                    </div>
+                  </div>
+                  <div className="bg-white bg-opacity-20 rounded-lg p-3">
+                    <div className="text-sm font-medium text-orange-100">Zone 2</div>
+                    <div className="text-xl font-bold">
+                      {zone2Data ? `${zone2Data.power_mW} mW` : 'N/A'}
+                    </div>
+                  </div>
+                  <div className="bg-white bg-opacity-20 rounded-lg p-3">
+                    <div className="text-sm font-medium text-orange-100">Zone 3</div>
+                    <div className="text-xl font-bold">
+                      {zone3Data ? `${zone3Data.power_mW} mW` : 'N/A'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Error Message */}
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
@@ -176,47 +255,99 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Main Data Display */}
-        {sensorData && (
+        {/* Individual Zone Data Display - Shows detailed data for all three zones */}
+        {(sensorData || zone2Data || zone3Data) && (
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             {/* Mobile Card Layout */}
             <div className="sm:hidden">
-              <div className="p-6 space-y-4">
-                <div className="flex justify-between items-center border-b pb-4">
-                  <h2 className="text-xl font-semibold text-gray-800">Sensor Data</h2>
-                  <span className="text-sm text-gray-500">
-                    {sensorData.node_id} / {sensorData.zone_id}
-                  </span>
+              <div className="p-6 space-y-6">
+                <div className="border-b pb-4">
+                  <h2 className="text-xl font-semibold text-gray-800">Individual Zone Data</h2>
+                  <p className="text-sm text-gray-500">Detailed sensor readings per zone</p>
                 </div>
                 
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="text-sm text-blue-600 font-medium">Current</div>
-                    <div className="text-2xl font-bold text-blue-900">{sensorData.current_mA} mA</div>
+                {/* Zone 1 Mobile Cards */}
+                {sensorData && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-700 border-l-4 border-blue-500 pl-3">Zone 1</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-blue-50 p-4 rounded-lg">
+                        <div className="text-sm text-blue-600 font-medium">Current</div>
+                        <div className="text-xl font-bold text-blue-900">{sensorData.current_mA} mA</div>
+                      </div>
+                      <div className="bg-green-50 p-4 rounded-lg">
+                        <div className="text-sm text-green-600 font-medium">Voltage</div>
+                        <div className="text-xl font-bold text-green-900">{sensorData.voltage_V} V</div>
+                      </div>
+                      <div className="bg-purple-50 p-4 rounded-lg">
+                        <div className="text-sm text-purple-600 font-medium">Power</div>
+                        <div className="text-xl font-bold text-purple-900">{sensorData.power_mW} mW</div>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="text-sm text-gray-600 font-medium">Timestamp</div>
+                        <div className="text-sm font-bold text-gray-900">{formatTimestamp(sensorData.timestamp)}</div>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <div className="text-sm text-green-600 font-medium">Voltage</div>
-                    <div className="text-2xl font-bold text-green-900">{sensorData.voltage_V} V</div>
+                )}
+
+                {/* Zone 2 Mobile Cards */}
+                {zone2Data && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-700 border-l-4 border-orange-500 pl-3">Zone 2</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-blue-50 p-4 rounded-lg">
+                        <div className="text-sm text-blue-600 font-medium">Current</div>
+                        <div className="text-xl font-bold text-blue-900">{zone2Data.current_mA} mA</div>
+                      </div>
+                      <div className="bg-green-50 p-4 rounded-lg">
+                        <div className="text-sm text-green-600 font-medium">Voltage</div>
+                        <div className="text-xl font-bold text-green-900">{zone2Data.voltage_V} V</div>
+                      </div>
+                      <div className="bg-purple-50 p-4 rounded-lg">
+                        <div className="text-sm text-purple-600 font-medium">Power</div>
+                        <div className="text-xl font-bold text-purple-900">{zone2Data.power_mW} mW</div>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="text-sm text-gray-600 font-medium">Timestamp</div>
+                        <div className="text-sm font-bold text-gray-900">{formatTimestamp(zone2Data.timestamp)}</div>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className="bg-purple-50 p-4 rounded-lg">
-                    <div className="text-sm text-purple-600 font-medium">Power</div>
-                    <div className="text-2xl font-bold text-purple-900">{sensorData.power_mW} mW</div>
+                )}
+
+                {/* Zone 3 Mobile Cards */}
+                {zone3Data && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-700 border-l-4 border-teal-500 pl-3">Zone 3</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-blue-50 p-4 rounded-lg">
+                        <div className="text-sm text-blue-600 font-medium">Current</div>
+                        <div className="text-xl font-bold text-blue-900">{zone3Data.current_mA} mA</div>
+                      </div>
+                      <div className="bg-green-50 p-4 rounded-lg">
+                        <div className="text-sm text-green-600 font-medium">Voltage</div>
+                        <div className="text-xl font-bold text-green-900">{zone3Data.voltage_V} V</div>
+                      </div>
+                      <div className="bg-purple-50 p-4 rounded-lg">
+                        <div className="text-sm text-purple-600 font-medium">Power</div>
+                        <div className="text-xl font-bold text-purple-900">{zone3Data.power_mW} mW</div>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="text-sm text-gray-600 font-medium">Timestamp</div>
+                        <div className="text-sm font-bold text-gray-900">{formatTimestamp(zone3Data.timestamp)}</div>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 font-medium">Timestamp</div>
-                    <div className="text-lg font-bold text-gray-900">{formatTimestamp(sensorData.timestamp)}</div>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
 
-            {/* Desktop Table Layout */}
+            {/* Desktop Table Layout - Shows all zones in a table */}
             <div className="hidden sm:block">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-800">Real-time Sensor Data</h2>
+                <h2 className="text-xl font-semibold text-gray-800">Individual Zone Sensor Data</h2>
+                <p className="text-sm text-gray-500 mt-1">Detailed readings from all zones</p>
               </div>
               
               <div className="overflow-x-auto">
@@ -224,10 +355,7 @@ export default function Dashboard() {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Node ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Zone ID
+                        Zone
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Current (mA)
@@ -239,37 +367,100 @@ export default function Dashboard() {
                         Power (mW)
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Timestamp
+                        Last Updated
                       </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    <tr className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {sensorData.node_id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {sensorData.zone_id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                          {sensorData.current_mA}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                          {sensorData.voltage_V}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                          {sensorData.power_mW}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatTimestamp(sensorData.timestamp)}
-                      </td>
-                    </tr>
+                    {/* Zone 1 Row */}
+                    {sensorData && (
+                      <tr className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                            <span className="text-sm font-medium text-gray-900">Zone 1</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            {sensorData.current_mA}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                            {sensorData.voltage_V}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                            {sensorData.power_mW}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {formatTimestamp(sensorData.timestamp)}
+                        </td>
+                      </tr>
+                    )}
+                    
+                    {/* Zone 2 Row */}
+                    {zone2Data && (
+                      <tr className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
+                            <span className="text-sm font-medium text-gray-900">Zone 2</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            {zone2Data.current_mA}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                            {zone2Data.voltage_V}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                            {zone2Data.power_mW}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {formatTimestamp(zone2Data.timestamp)}
+                        </td>
+                      </tr>
+                    )}
+                    
+                    {/* Zone 3 Row */}
+                    {zone3Data && (
+                      <tr className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-teal-500 rounded-full mr-3"></div>
+                            <span className="text-sm font-medium text-gray-900">Zone 3</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            {zone3Data.current_mA}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                            {zone3Data.voltage_V}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                            {zone3Data.power_mW}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {formatTimestamp(zone3Data.timestamp)}
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
