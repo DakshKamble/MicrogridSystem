@@ -10,3 +10,5 @@ paho-mqtt==1.6.1
 
 # Additional useful dependencies
 python-multipart==0.0.6  # For form data support if needed later
+
+# Note: fastapi includes python-cors by default, no need to install separately

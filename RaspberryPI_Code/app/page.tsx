@@ -13,10 +13,8 @@ interface SensorData {
   received_at?: string
 }
 
-// API configuration - change this to match your Raspberry Pi's IP
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'http://192.168.1.100:8000' // Change this to your Pi's IP
-  : 'http://localhost:8000'
+// API configuration - both dashboard and FastAPI running on same Raspberry Pi
+const API_BASE_URL = 'http://localhost:8000' // Local connection since both services are on same Pi
 
 export default function Dashboard() {
   const [sensorData, setSensorData] = useState<SensorData | null>(null)
