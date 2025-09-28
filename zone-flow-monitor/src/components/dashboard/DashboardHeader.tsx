@@ -65,7 +65,7 @@ export function DashboardHeader({ isConnected, lastUpdate, hasAlerts }: Dashboar
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-status-warning animate-pulse" />
               <Badge variant="secondary" className="bg-status-warning/20 text-status-warning border-status-warning/30">
-                Sensor Alert
+                ESP32 Offline
               </Badge>
             </div>
           )}
