@@ -54,7 +54,7 @@ export function ZoneCard({ zoneId, name, nodeName, data, isOnline }: ZoneCardPro
           title="Current"
           value={data.current}
           unit="mA"
-          max={5000}
+          max={3000}
           icon="🔋"
           color={zoneColor}
         />
@@ -62,7 +62,7 @@ export function ZoneCard({ zoneId, name, nodeName, data, isOnline }: ZoneCardPro
           title="Voltage"
           value={data.voltage}
           unit="V"
-          max={240}
+          max={12}
           icon="🔌"
           color={zoneColor}
         />
@@ -70,7 +70,7 @@ export function ZoneCard({ zoneId, name, nodeName, data, isOnline }: ZoneCardPro
           title="Power"
           value={data.power}
           unit="mW"
-          max={1000}
+          max={15000}
           icon="⚡"
           color={zoneColor}
         />
