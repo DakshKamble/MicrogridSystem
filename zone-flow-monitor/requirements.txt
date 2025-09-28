@@ -1,0 +1,7 @@
+# FastAPI server dependencies for Microgrid MQTT monitoring system
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+paho-mqtt>=1.6.1
+
+# Additional dependencies that may be useful for development
+python-multipart>=0.0.6
