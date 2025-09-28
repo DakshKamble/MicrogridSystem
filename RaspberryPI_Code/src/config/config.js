@@ -1,7 +1,27 @@
 // Configuration for the Microgrid Dashboard
+
+// Auto-detect the correct API base URL
+const getApiBaseUrl = () => {
+  // If environment variable is set, use it
+  if (process.env.REACT_APP_API_BASE_URL) {
+    return process.env.REACT_APP_API_BASE_URL;
+  }
+  
+  // Auto-detect based on current hostname
+  const hostname = window.location.hostname;
+  
+  // If accessing via localhost, use localhost for API
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:8000';
+  }
+  
+  // If accessing via network IP, use the same IP for API
+  return `http://${hostname}:8000`;
+};
+
 export const CONFIG = {
-  // API Configuration
-  API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000',
+  // API Configuration - Auto-detects correct URL
+  API_BASE_URL: getApiBaseUrl(),
   
   // Zone Configuration
   ZONES: [

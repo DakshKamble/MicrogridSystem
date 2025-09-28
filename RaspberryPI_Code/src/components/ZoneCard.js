@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import {
   ExpandMore as ExpandMoreIcon,
-  Power as PowerIcon,
   ElectricBolt as ElectricBoltIcon,
   Settings as SettingsIcon
 } from '@mui/icons-material';
@@ -85,7 +84,7 @@ const ZoneCard = ({ zoneName, data, zoneConfig }) => {
               <Grid item xs={12} sm={4}>
                 <DataCard
                   title="Current"
-                  value={data.current_mA?.toFixed(CONFIG.DECIMAL_PLACES.current) || '0.0'}
+                  value={data && data.current_mA !== undefined ? data.current_mA.toFixed(CONFIG.DECIMAL_PLACES.current) : '0.0'}
                   unit="mA"
                   icon="🔌"
                   color={zoneConfig?.color || '#1f77b4'}
@@ -94,7 +93,7 @@ const ZoneCard = ({ zoneName, data, zoneConfig }) => {
               <Grid item xs={12} sm={4}>
                 <DataCard
                   title="Voltage"
-                  value={data.voltage_V?.toFixed(CONFIG.DECIMAL_PLACES.voltage) || '0.000'}
+                  value={data && data.voltage_V !== undefined ? data.voltage_V.toFixed(CONFIG.DECIMAL_PLACES.voltage) : '0.000'}
                   unit="V"
                   icon="⚡"
                   color={zoneConfig?.color || '#1f77b4'}
@@ -103,7 +102,7 @@ const ZoneCard = ({ zoneName, data, zoneConfig }) => {
               <Grid item xs={12} sm={4}>
                 <DataCard
                   title="Power"
-                  value={data.power_mW?.toFixed(CONFIG.DECIMAL_PLACES.power) || '0.0'}
+                  value={data && data.power_mW !== undefined ? data.power_mW.toFixed(CONFIG.DECIMAL_PLACES.power) : '0.0'}
                   unit="mW"
                   icon="⚙️"
                   color={zoneConfig?.color || '#1f77b4'}

@@ -149,10 +149,12 @@ export const calculateSystemSummary = (allData) => {
   };
 };
 
-export default {
+const apiService = {
   fetchZoneData,
   fetchAllZonesData,
   fetchSystemStatus,
   formatTimestamp,
   calculateSystemSummary
 };
+
+export default apiService;
