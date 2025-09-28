@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Microgrid Energy Dashboard Design System 
+Modern dark theme with zone-based color accents and energy monitoring aesthetics.
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Dark theme base colors */
+    --background: 220 27% 8%;
+    --foreground: 213 31% 91%;
+
+    --card: 220 23% 11%;
+    --card-foreground: 213 31% 91%;
+
+    --popover: 220 23% 11%;
+    --popover-foreground: 213 31% 91%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 220 27% 8%;
+
+    --secondary: 220 17% 17%;
+    --secondary-foreground: 213 31% 91%;
+
+    --muted: 220 17% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 220 27% 8%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 17% 17%;
+    --input: 220 17% 17%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    /* Zone accent colors for energy monitoring */
+    --zone-1: 217 91% 60%; /* Blue */
+    --zone-2: 142 76% 36%; /* Green */
+    --zone-3: 43 96% 56%;  /* Orange */
+    
+    /* Status colors */
+    --status-online: 142 76% 36%;
+    --status-offline: 0 84% 60%;
+    --status-warning: 43 96% 56%;
+    
+    /* Energy dashboard specific colors */
+    --grid-primary: 217 91% 60%;
+    --grid-secondary: 220 17% 17%;
+    --chart-grid: 220 17% 20%;
+    
+    /* Gradients for modern energy aesthetics */
+    --gradient-zone-1: linear-gradient(135deg, hsl(217 91% 60% / 0.2), hsl(217 91% 60% / 0.05));
+    --gradient-zone-2: linear-gradient(135deg, hsl(142 76% 36% / 0.2), hsl(142 76% 36% / 0.05));
+    --gradient-zone-3: linear-gradient(135deg, hsl(43 96% 56% / 0.2), hsl(43 96% 56% / 0.05));
+    
+    /* Glow effects for active elements */
+    --glow-zone-1: 0 0 20px hsl(217 91% 60% / 0.3);
+    --glow-zone-2: 0 0 20px hsl(142 76% 36% / 0.3);
+    --glow-zone-3: 0 0 20px hsl(43 96% 56% / 0.3);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s ease-out;
+  }
+
+  .dark {
+    /* Keep existing dark styles - already optimized for energy dashboard */
+    --background: 220 27% 8%;
+    --foreground: 213 31% 91%;
+    --card: 220 23% 11%;
+    --card-foreground: 213 31% 91%;
+    --popover: 220 23% 11%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 220 27% 8%;
+    --secondary: 220 17% 17%;
+    --secondary-foreground: 213 31% 91%;
+    --muted: 220 17% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 220 27% 8%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 17% 17%;
+    --input: 220 17% 17%;
+    --ring: 217 91% 60%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
