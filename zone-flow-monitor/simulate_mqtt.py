@@ -29,11 +29,18 @@ class MQTTSimulator:
     def _on_disconnect(self, client, userdata, rc):
         print(f"📡 Disconnected from MQTT broker. Return code: {rc}")
     
-    def simulate_sensor_data(self):
-        """Generate realistic sensor data similar to NodeMCU"""
-        # Simulate realistic microgrid values
-        base_current = 1200  # Base current in mA
-        base_voltage = 15.0  # Base voltage in V
+    def simulate_sensor_data(self, zone_id):
+        """Generate realistic sensor data similar to NodeMCU for a specific zone"""
+        # Different base values for each zone to make them distinguishable
+        zone_configs = {
+            1: {"base_current": 1200, "base_voltage": 15.0},
+            2: {"base_current": 800, "base_voltage": 12.0}, 
+            3: {"base_current": 1500, "base_voltage": 18.0}
+        }
+        
+        config = zone_configs[zone_id]
+        base_current = config["base_current"]
+        base_voltage = config["base_voltage"]
         
         # Add some realistic variation
         current_variation = random.uniform(-300, 500)  # ±300-500mA variation
@@ -45,7 +52,7 @@ class MQTTSimulator:
         
         return {
             "node_id": "node1",
-            "zone_id": "zone1",
+            "zone_id": f"zone{zone_id}",
             "timestamp": datetime.now().isoformat() + "Z",
             "current_mA": round(current_mA, 1),
             "voltage_V": round(voltage_V, 2),
@@ -66,7 +73,7 @@ class MQTTSimulator:
             self.client.loop_start()
             
             print("[SIMULATOR] Starting MQTT data simulation...")
-            print(f"[SIMULATOR] Publishing to topic: /node1/zone1")
+            print(f"[SIMULATOR] Publishing to topics: /node1/zone1, /node1/zone2, /node1/zone3")
             print(f"[SIMULATOR] Sending data every {interval} seconds")
             print("[SIMULATOR] Press Ctrl+C to stop")
             print("-" * 50)
@@ -75,20 +82,23 @@ class MQTTSimulator:
             message_count = 0
             
             while self.is_running:
-                # Generate and send data
-                data = self.simulate_sensor_data()
-                payload = json.dumps(data)
+                # Generate and send data for all 3 zones
+                for zone_id in [1, 2, 3]:
+                    data = self.simulate_sensor_data(zone_id)
+                    payload = json.dumps(data)
+                    topic = f"/node1/zone{zone_id}"
+                    
+                    result = self.client.publish(topic, payload)
+                    
+                    if result.rc == mqtt.MQTT_ERR_SUCCESS:
+                        print(f"[SENT] Zone {zone_id} Message {message_count + 1}: "
+                              f"Current={data['current_mA']}mA, "
+                              f"Voltage={data['voltage_V']}V, "
+                              f"Power={data['power_mW']}mW")
+                    else:
+                        print(f"[ERROR] Failed to send message to Zone {zone_id}")
                 
-                result = self.client.publish("/node1/zone1", payload)
                 message_count += 1
-                
-                if result.rc == mqtt.MQTT_ERR_SUCCESS:
-                    print(f"[SENT] Message {message_count}: "
-                          f"Current={data['current_mA']}mA, "
-                          f"Voltage={data['voltage_V']}V, "
-                          f"Power={data['power_mW']}mW")
-                else:
-                    print(f"[ERROR] Failed to send message {message_count}")
                 
                 # Optional disconnect test after 20 messages
                 if include_disconnect_test and message_count == 20:
@@ -123,7 +133,7 @@ def main():
     print(f"Configuration:")
     print(f"   MQTT Broker: {BROKER_HOST}:{BROKER_PORT}")
     print(f"   Send Interval: {SEND_INTERVAL} seconds")
-    print(f"   Topic: /node1/zone1")
+    print(f"   Topics: /node1/zone1, /node1/zone2, /node1/zone3")
     print()
     
     # Ask user for options

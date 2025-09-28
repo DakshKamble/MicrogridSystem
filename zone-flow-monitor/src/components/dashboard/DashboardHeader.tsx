@@ -27,7 +27,7 @@ export function DashboardHeader({ isConnected, lastUpdate, hasAlerts }: Dashboar
             Microgrid Monitoring System
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Real-time IoT Energy Monitoring – NodeMCU Zone 1
+            Real-time IoT Energy Monitoring – Zones 1 to 3
           </p>
         </div>
 

@@ -27,9 +27,9 @@ export function ZoneCard({ zoneId, name, nodeName, data, isOnline }: ZoneCardPro
   const zoneColor = `zone-${zoneId}` as "zone-1" | "zone-2" | "zone-3";
   
   const gradientMap = {
-    1: "bg-[var(--gradient-zone-1)]",
-    2: "bg-[var(--gradient-zone-2)]", 
-    3: "bg-[var(--gradient-zone-3)]"
+    1: "bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20",
+    2: "bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-500/20", 
+    3: "bg-gradient-to-br from-orange-500/10 to-orange-600/5 border-orange-500/20"
   };
 
   return (

@@ -30,15 +30,15 @@ export function DashboardFooter({ stats }: DashboardFooterProps) {
         {/* Aggregate Statistics */}
         <div className="flex items-center gap-8">
           <div className="text-center">
-            <div className="text-lg font-bold text-zone-1">
-              {stats.totalPower.toFixed(1)} mW
+            <div className="text-lg font-bold text-blue-500">
+              {stats.totalPower.toFixed(3)} W
             </div>
             <div className="text-xs text-muted-foreground">Total Power</div>
           </div>
           
           <div className="text-center">
-            <div className="text-lg font-bold text-zone-2">
-              {stats.averageVoltage.toFixed(1)} V
+            <div className="text-lg font-bold text-green-500">
+              {stats.averageVoltage.toFixed(2)} V
             </div>
             <div className="text-xs text-muted-foreground">Avg Voltage</div>
           </div>
@@ -47,9 +47,9 @@ export function DashboardFooter({ stats }: DashboardFooterProps) {
             <Badge 
               variant="secondary" 
               className={`
-                ${stats.highestLoadZone === 1 ? 'bg-zone-1/20 text-zone-1 border-zone-1/30' : ''}
-                ${stats.highestLoadZone === 2 ? 'bg-zone-2/20 text-zone-2 border-zone-2/30' : ''}
-                ${stats.highestLoadZone === 3 ? 'bg-zone-3/20 text-zone-3 border-zone-3/30' : ''}
+                ${stats.highestLoadZone === 1 ? 'bg-blue-500/20 text-blue-500 border-blue-500/30' : ''}
+                ${stats.highestLoadZone === 2 ? 'bg-green-500/20 text-green-500 border-green-500/30' : ''}
+                ${stats.highestLoadZone === 3 ? 'bg-orange-500/20 text-orange-500 border-orange-500/30' : ''}
               `}
             >
               Zone {stats.highestLoadZone}

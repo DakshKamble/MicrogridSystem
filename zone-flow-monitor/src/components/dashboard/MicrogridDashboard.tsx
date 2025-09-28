@@ -6,9 +6,12 @@ import { useEnergyData } from "@/hooks/useEnergyData";
 export function MicrogridDashboard() {
   const { data, aggregateStats, hasAlerts } = useEnergyData();
 
-  // Single NodeMCU configuration
-  const zoneName = "Zone 1";
-  const nodeName = "NodeMCU_Node1";
+  // Zone configuration for 3-zone system
+  const zoneConfig = {
+    1: { name: "Zone 1", nodeName: "NodeMCU_Node1", color: "blue" },
+    2: { name: "Zone 2", nodeName: "NodeMCU_Node2", color: "green" },
+    3: { name: "Zone 3", nodeName: "NodeMCU_Node3", color: "orange" }
+  };
 
   return (
     <div className="min-h-screen bg-background p-4">
@@ -20,16 +23,18 @@ export function MicrogridDashboard() {
           hasAlerts={hasAlerts}
         />
 
-        {/* Main Zone Display - NodeMCU Zone 1 */}
-        <div className="grid grid-cols-1 gap-6 mb-6 max-w-3xl mx-auto">
-          <ZoneCard
-            key={1}
-            zoneId={1}
-            name={`${zoneName} (${nodeName})`}
-            nodeName={nodeName}
-            data={data.zones[1]}
-            isOnline={data.status[1]}
-          />
+        {/* Main Zone Grid - 3 Columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          {[1, 2, 3].map((zoneId) => (
+            <ZoneCard
+              key={zoneId}
+              zoneId={zoneId}
+              name={`${zoneConfig[zoneId as keyof typeof zoneConfig].name} – ${zoneConfig[zoneId as keyof typeof zoneConfig].nodeName}`}
+              nodeName={zoneConfig[zoneId as keyof typeof zoneConfig].nodeName}
+              data={data.zones[zoneId]}
+              isOnline={data.status[zoneId]}
+            />
+          ))}
         </div>
 
         {/* Footer */}

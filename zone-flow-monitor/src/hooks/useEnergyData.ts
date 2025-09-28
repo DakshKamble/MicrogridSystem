@@ -55,20 +55,20 @@ const convertMQTTResponse = (response: MQTTServerResponse): EnergyDataPoint => (
   power: response.power_mW / 1000 // Convert mW to W
 });
 
-// Fetch data from FastAPI server
-const fetchZoneData = async (): Promise<MQTTServerResponse | null> => {
+// Fetch data from FastAPI server for a specific zone
+const fetchZoneData = async (zoneId: number): Promise<MQTTServerResponse | null> => {
   try {
-    const response = await fetch(`${getApiBaseUrl()}/node1/zone1`);
+    const response = await fetch(`${getApiBaseUrl()}/node1/zone${zoneId}`);
     if (!response.ok) {
       if (response.status === 404) {
-        console.warn('No data available from MQTT server yet');
+        console.warn(`No data available for zone ${zoneId} from MQTT server yet`);
         return null;
       }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching zone data:', error);
+    console.error(`Error fetching zone ${zoneId} data:`, error);
     return null;
   }
 };
@@ -108,10 +108,24 @@ export function useEnergyData() {
         voltage: 0,
         power: 0,
         history: []
+      },
+      2: {
+        current: 0,
+        voltage: 0,
+        power: 0,
+        history: []
+      },
+      3: {
+        current: 0,
+        voltage: 0,
+        power: 0,
+        history: []
       }
     },
     status: {
-      1: false // Start as offline until we get data
+      1: false, // Start as offline until we get data
+      2: false,
+      3: false
     },
     lastUpdate: new Date(),
     isConnected: false
@@ -128,48 +142,62 @@ export function useEnergyData() {
         // Check server status and get last update info
         const serverStatus = await checkServerStatus();
         
-        // Fetch zone data
-        const zoneResponse = await fetchZoneData();
+        // Fetch data for all zones
+        const zonePromises = [1, 2, 3].map(zoneId => fetchZoneData(zoneId));
+        const zoneResponses = await Promise.all(zonePromises);
         
-        if (zoneResponse && isActive) {
-          const newDataPoint = convertMQTTResponse(zoneResponse);
-          
-          // Check if the data is stale
-          const dataIsStale = isDataStale(zoneResponse.received_at);
-          
+        if (isActive) {
           setData(prevData => {
             const newData = { ...prevData };
+            let hasAnyUpdate = false;
+            let latestUpdateTime = prevData.lastUpdate;
             
-            // Update Zone 1 with real data
-            newData.zones[1] = {
-              ...newDataPoint,
-              history: [
-                ...prevData.zones[1].history.slice(-14), // Keep last 14 points
-                newDataPoint // Add newest
-              ]
-            };
+            // Process each zone
+            [1, 2, 3].forEach((zoneId, index) => {
+              const zoneResponse = zoneResponses[index];
+              
+              if (zoneResponse) {
+                const newDataPoint = convertMQTTResponse(zoneResponse);
+                const dataIsStale = isDataStale(zoneResponse.received_at);
+                
+                // Update zone data
+                newData.zones[zoneId] = {
+                  ...newDataPoint,
+                  history: [
+                    ...prevData.zones[zoneId].history.slice(-14), // Keep last 14 points
+                    newDataPoint // Add newest
+                  ]
+                };
+                
+                // Zone is online if we got fresh data and it's not stale
+                newData.status[zoneId] = serverStatus.isOnline && !dataIsStale;
+                
+                // Track latest update time
+                const updateTime = new Date(zoneResponse.received_at);
+                if (updateTime > latestUpdateTime) {
+                  latestUpdateTime = updateTime;
+                }
+                hasAnyUpdate = true;
+              } else {
+                // No data for this zone
+                newData.status[zoneId] = false;
+              }
+            });
             
-            // Zone is online if we got fresh data and it's not stale
-            newData.status[1] = serverStatus.isOnline && !dataIsStale;
-            newData.lastUpdate = new Date(zoneResponse.received_at);
             newData.isConnected = serverStatus.isOnline;
+            if (hasAnyUpdate) {
+              newData.lastUpdate = latestUpdateTime;
+            }
             
             return newData;
           });
-        } else if (isActive) {
-          // No data available from NodeMCU
-          setData(prevData => ({
-            ...prevData,
-            status: { 1: false }, // NodeMCU is offline
-            isConnected: serverStatus.isOnline // Server might still be online
-          }));
         }
       } catch (error) {
         console.error('Error updating data:', error);
         if (isActive) {
           setData(prevData => ({
             ...prevData,
-            status: { 1: false }, // NodeMCU is offline
+            status: { 1: false, 2: false, 3: false }, // All zones offline
             isConnected: false // Server is also offline
           }));
         }
@@ -188,13 +216,22 @@ export function useEnergyData() {
     };
   }, []);
 
-  // Calculate aggregate statistics (only for Zone 1 now)
-  const zone1Data = data.zones[1];
-  const totalPower = zone1Data.power;
-  const averageVoltage = zone1Data.voltage;
-  const highestLoadZone = 1; // Only one zone
+  // Calculate aggregate statistics for all zones
+  const zones = [data.zones[1], data.zones[2], data.zones[3]];
+  const totalPower = zones.reduce((sum, zone) => sum + zone.power, 0);
+  const averageVoltage = zones.reduce((sum, zone) => sum + zone.voltage, 0) / zones.length;
+  
+  // Find highest load zone
+  let highestLoadZone = 1;
+  let highestPower = data.zones[1].power;
+  for (let i = 2; i <= 3; i++) {
+    if (data.zones[i].power > highestPower) {
+      highestPower = data.zones[i].power;
+      highestLoadZone = i;
+    }
+  }
 
-  const hasAlerts = !data.status[1] || !data.isConnected;
+  const hasAlerts = !data.status[1] || !data.status[2] || !data.status[3] || !data.isConnected;
 
   return {
     data,

@@ -17,15 +17,15 @@ export function EnergyGauge({ title, value, unit, max, icon, color }: EnergyGaug
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   const colorMap = {
-    "zone-1": "text-zone-1",
-    "zone-2": "text-zone-2", 
-    "zone-3": "text-zone-3"
+    "zone-1": "text-blue-500",
+    "zone-2": "text-green-500", 
+    "zone-3": "text-orange-500"
   };
 
-  const glowMap = {
-    "zone-1": "drop-shadow-[var(--glow-zone-1)]",
-    "zone-2": "drop-shadow-[var(--glow-zone-2)]",
-    "zone-3": "drop-shadow-[var(--glow-zone-3)]"
+  const strokeColorMap = {
+    "zone-1": "stroke-blue-500",
+    "zone-2": "stroke-green-500",
+    "zone-3": "stroke-orange-500"
   };
 
   return (
@@ -52,12 +52,11 @@ export function EnergyGauge({ title, value, unit, max, icon, color }: EnergyGaug
             cx="50"
             cy="50"
             r={radius}
-            stroke={`hsl(var(--${color}))`}
             strokeWidth="6"
             fill="none"
             strokeDasharray={strokeDasharray}
             strokeDashoffset={strokeDashoffset}
-            className={`transition-all duration-1000 ease-out ${glowMap[color]}`}
+            className={`transition-all duration-1000 ease-out ${strokeColorMap[color]}`}
             strokeLinecap="round"
           />
         </svg>
