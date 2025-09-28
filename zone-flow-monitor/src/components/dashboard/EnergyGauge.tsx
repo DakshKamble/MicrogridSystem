@@ -65,7 +65,7 @@ export function EnergyGauge({ title, value, unit, max, icon, color }: EnergyGaug
         {/* Center value */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className={`text-xl font-bold ${colorMap[color]}`}>
-            {value.toFixed(1)}
+            {value.toFixed(3)}
           </span>
           <span className="text-xs text-muted-foreground">{unit}</span>
         </div>

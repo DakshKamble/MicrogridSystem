@@ -73,20 +73,20 @@ class MQTTClient:
     def _on_connect(self, client, userdata, flags, rc):
         """Callback for when the client receives a CONNACK response from the server."""
         if rc == 0:
-            print(f"✅ Connected to MQTT broker at {self.broker_host}:{self.broker_port}")
+            print(f"[OK] Connected to MQTT broker at {self.broker_host}:{self.broker_port}")
             # Subscribe to the specific topic
             topic = "/node1/zone1"
             client.subscribe(topic)
-            print(f"📡 Subscribed to topic: {topic}")
+            print(f"[MQTT] Subscribed to topic: {topic}")
         else:
-            print(f"❌ Failed to connect to MQTT broker. Return code: {rc}")
+            print(f"[ERROR] Failed to connect to MQTT broker. Return code: {rc}")
     
     def _on_message(self, client, userdata, msg):
         """Callback for when a PUBLISH message is received from the server."""
         try:
             # Decode the message payload
             payload_str = msg.payload.decode('utf-8')
-            print(f"📨 Received MQTT message on topic '{msg.topic}': {payload_str}")
+            print(f"[MQTT] Received message on topic '{msg.topic}': {payload_str}")
             
             # Parse JSON payload
             payload = json.loads(payload_str)
@@ -96,7 +96,7 @@ class MQTTClient:
             missing_fields = [field for field in required_fields if field not in payload]
             
             if missing_fields:
-                print(f"⚠️ Warning: Missing required fields in payload: {missing_fields}")
+                print(f"[WARNING] Missing required fields in payload: {missing_fields}")
                 return
             
             # Store the data
@@ -104,29 +104,29 @@ class MQTTClient:
             zone_id = payload["zone_id"]
             data_store.update_data(node_id, zone_id, payload)
             
-            print(f"💾 Stored data for {node_id}/{zone_id}: "
+            print(f"[DATA] Stored for {node_id}/{zone_id}: "
                   f"Current={payload['current_mA']}mA, "
                   f"Voltage={payload['voltage_V']}V, "
                   f"Power={payload['power_mW']}mW")
             
         except json.JSONDecodeError as e:
-            print(f"❌ Error parsing JSON payload: {e}")
+            print(f"[ERROR] Error parsing JSON payload: {e}")
         except Exception as e:
-            print(f"❌ Error processing MQTT message: {e}")
+            print(f"[ERROR] Error processing MQTT message: {e}")
     
     def _on_disconnect(self, client, userdata, rc):
         """Callback for when the client disconnects from the server."""
-        print(f"📡 Disconnected from MQTT broker. Return code: {rc}")
+        print(f"[MQTT] Disconnected from MQTT broker. Return code: {rc}")
     
     def start(self):
         """Start the MQTT client."""
         try:
-            print(f"🔌 Connecting to MQTT broker at {self.broker_host}:{self.broker_port}...")
+            print(f"[MQTT] Connecting to MQTT broker at {self.broker_host}:{self.broker_port}...")
             self.client.connect(self.broker_host, self.broker_port, 60)
             # Start the network loop in a separate thread
             self.client.loop_start()
         except Exception as e:
-            print(f"❌ Error starting MQTT client: {e}")
+            print(f"[ERROR] Error starting MQTT client: {e}")
     
     def stop(self):
         """Stop the MQTT client."""
@@ -141,7 +141,7 @@ mqtt_client = MQTTClient()
 @app.on_event("startup")
 async def startup_event():
     """Initialize MQTT client when FastAPI starts."""
-    print("🚀 Starting Microgrid MQTT API server...")
+    print("[SERVER] Starting Microgrid MQTT API server...")
     mqtt_client.start()
     # Give MQTT client a moment to connect
     time.sleep(1)
@@ -150,7 +150,7 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     """Clean up MQTT client when FastAPI shuts down."""
-    print("🛑 Shutting down Microgrid MQTT API server...")
+    print("[SERVER] Shutting down Microgrid MQTT API server...")
     mqtt_client.stop()
 
 
@@ -200,12 +200,12 @@ async def get_status():
 
 
 if __name__ == "__main__":
-    print("🔧 Starting Microgrid MQTT FastAPI Server...")
-    print("📝 Access API documentation at: http://0.0.0.0:8000/docs")
-    print("🌐 Access API at: http://0.0.0.0:8000/api/v1/node1/zone1")
-    print("📊 Check status at: http://0.0.0.0:8000/api/v1/status")
-    print("🌍 Server accessible from network via RPi IP address")
-    print("🛑 Press Ctrl+C to stop the server")
+    print("[SERVER] Starting Microgrid MQTT FastAPI Server...")
+    print("[INFO] Access API documentation at: http://0.0.0.0:8000/docs")
+    print("[INFO] Access API at: http://0.0.0.0:8000/api/v1/node1/zone1")
+    print("[INFO] Check status at: http://0.0.0.0:8000/api/v1/status")
+    print("[INFO] Server accessible from network via RPi IP address")
+    print("[INFO] Press Ctrl+C to stop the server")
     
     # Run the FastAPI server
     uvicorn.run(
