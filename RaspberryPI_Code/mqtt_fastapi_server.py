@@ -74,10 +74,11 @@ class MQTTClient:
         """Callback for when the client receives a CONNACK response from the server."""
         if rc == 0:
             print(f"✅ Connected to MQTT broker at {self.broker_host}:{self.broker_port}")
-            # Subscribe to the specific topic
-            topic = "/node1/zone1"
-            client.subscribe(topic)
-            print(f"📡 Subscribed to topic: {topic}")
+            # Subscribe to all zone topics
+            topics = ["/node1/zone1", "/node1/zone2", "/node1/zone3"]
+            for topic in topics:
+                client.subscribe(topic)
+                print(f"📡 Subscribed to topic: {topic}")
         else:
             print(f"❌ Failed to connect to MQTT broker. Return code: {rc}")
     
@@ -161,7 +162,10 @@ async def root():
         "message": "Microgrid MQTT API",
         "version": "1.0.0",
         "endpoints": {
-            "latest_data": "/api/v1/node1/zone1",
+            "zone1_data": "/api/v1/node1/zone1",
+            "zone2_data": "/api/v1/node1/zone2", 
+            "zone3_data": "/api/v1/node1/zone3",
+            "status": "/api/v1/status",
             "docs": "/docs",
             "redoc": "/redoc"
         }
@@ -182,27 +186,66 @@ async def get_node1_zone1_data():
     return data
 
 
+@app.get("/api/v1/node1/zone2")
+async def get_node1_zone2_data():
+    """Get the latest sensor data for node1/zone2."""
+    data = data_store.get_data("node1", "zone2")
+    
+    if data is None:
+        raise HTTPException(
+            status_code=404, 
+            detail="No data available for node1/zone2. Check if MQTT messages are being received."
+        )
+    
+    return data
+
+
+@app.get("/api/v1/node1/zone3")
+async def get_node1_zone3_data():
+    """Get the latest sensor data for node1/zone3."""
+    data = data_store.get_data("node1", "zone3")
+    
+    if data is None:
+        raise HTTPException(
+            status_code=404, 
+            detail="No data available for node1/zone3. Check if MQTT messages are being received."
+        )
+    
+    return data
+
+
 @app.get("/api/v1/status")
 async def get_status():
     """Get API status and basic statistics."""
-    # Check if we have any data
+    # Check if we have data for all zones
     node1_zone1_data = data_store.get_data("node1", "zone1")
+    node1_zone2_data = data_store.get_data("node1", "zone2")
+    node1_zone3_data = data_store.get_data("node1", "zone3")
     
     return {
         "status": "running",
         "mqtt_broker": f"{mqtt_client.broker_host}:{mqtt_client.broker_port}",
-        "subscribed_topics": ["/node1/zone1"],
+        "subscribed_topics": ["/node1/zone1", "/node1/zone2", "/node1/zone3"],
         "data_available": {
-            "node1/zone1": node1_zone1_data is not None
+            "node1/zone1": node1_zone1_data is not None,
+            "node1/zone2": node1_zone2_data is not None,
+            "node1/zone3": node1_zone3_data is not None
         },
-        "last_update": node1_zone1_data.get("received_at") if node1_zone1_data else None
+        "last_updates": {
+            "node1/zone1": node1_zone1_data.get("received_at") if node1_zone1_data else None,
+            "node1/zone2": node1_zone2_data.get("received_at") if node1_zone2_data else None,
+            "node1/zone3": node1_zone3_data.get("received_at") if node1_zone3_data else None
+        }
     }
 
 
 if __name__ == "__main__":
     print("🔧 Starting in development mode...")
     print("📝 Access API documentation at: http://localhost:8000/docs")
-    print("🌐 Access API at: http://localhost:8000/api/v1/node1/zone1")
+    print("🌐 Zone APIs available at:")
+    print("   - Zone 1: http://localhost:8000/api/v1/node1/zone1")
+    print("   - Zone 2: http://localhost:8000/api/v1/node1/zone2") 
+    print("   - Zone 3: http://localhost:8000/api/v1/node1/zone3")
     print("📊 Check status at: http://localhost:8000/api/v1/status")
     print("🛑 Press Ctrl+C to stop the server")
     
