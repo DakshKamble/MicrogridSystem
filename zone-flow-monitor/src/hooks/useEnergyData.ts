@@ -22,7 +22,6 @@ export interface MicrogridData {
     [key: number]: boolean;
   };
   lastUpdate: Date;
-  lastDataReceived: Date | null;
   isConnected: boolean;
 }
 
@@ -51,9 +50,9 @@ const getApiBaseUrl = () => {
 // Convert MQTT server response to our internal format
 const convertMQTTResponse = (response: MQTTServerResponse): EnergyDataPoint => ({
   timestamp: new Date(response.timestamp),
-  current: response.current_mA,
+  current: response.current_mA / 1000, // Convert mA to A
   voltage: response.voltage_V,
-  power: response.power_mW
+  power: response.power_mW / 1000 // Convert mW to W
 });
 
 // Fetch data from FastAPI server
@@ -74,20 +73,32 @@ const fetchZoneData = async (): Promise<MQTTServerResponse | null> => {
   }
 };
 
-// Check server status
-const checkServerStatus = async (): Promise<boolean> => {
+// Check server status and get detailed information
+const checkServerStatus = async (): Promise<{isOnline: boolean, lastUpdate: string | null}> => {
   try {
     const response = await fetch(`${getApiBaseUrl()}/status`);
-    return response.ok;
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        isOnline: true,
+        lastUpdate: data.last_update
+      };
+    }
+    return { isOnline: false, lastUpdate: null };
   } catch (error) {
     console.error('Error checking server status:', error);
-    return false;
+    return { isOnline: false, lastUpdate: null };
   }
 };
 
-// Configuration constants
-const DATA_TIMEOUT_MS = 15000; // 15 seconds - consider offline if no data received
-const POLL_INTERVAL_MS = 3000; // 3 seconds - how often to check for new data
+// Check if data is stale (no updates for more than 15 seconds)
+const isDataStale = (lastUpdateTime: string | null): boolean => {
+  if (!lastUpdateTime) return true;
+  const lastUpdate = new Date(lastUpdateTime);
+  const now = new Date();
+  const diffSeconds = (now.getTime() - lastUpdate.getTime()) / 1000;
+  return diffSeconds > 15; // Consider stale after 15 seconds
+};
 
 export function useEnergyData() {
   const [data, setData] = useState<MicrogridData>(() => ({
@@ -103,35 +114,28 @@ export function useEnergyData() {
       1: false // Start as offline until we get data
     },
     lastUpdate: new Date(),
-    lastDataReceived: null,
     isConnected: false
   }));
 
   useEffect(() => {
     let isActive = true;
 
-    // Function to check if data is stale (timeout detection)
-    const checkDataTimeout = (lastDataReceived: Date | null): boolean => {
-      if (!lastDataReceived) return true; // No data received yet
-      const now = new Date();
-      const timeSinceLastData = now.getTime() - lastDataReceived.getTime();
-      return timeSinceLastData > DATA_TIMEOUT_MS;
-    };
-
     // Function to fetch and update data
     const updateData = async () => {
       if (!isActive) return;
 
       try {
-        // Check server status
-        const serverOnline = await checkServerStatus();
+        // Check server status and get last update info
+        const serverStatus = await checkServerStatus();
         
         // Fetch zone data
         const zoneResponse = await fetchZoneData();
         
         if (zoneResponse && isActive) {
           const newDataPoint = convertMQTTResponse(zoneResponse);
-          const dataReceivedAt = new Date(zoneResponse.received_at);
+          
+          // Check if the data is stale
+          const dataIsStale = isDataStale(zoneResponse.received_at);
           
           setData(prevData => {
             const newData = { ...prevData };
@@ -145,73 +149,42 @@ export function useEnergyData() {
               ]
             };
             
-            newData.status[1] = true; // Zone is online if we got fresh data
-            newData.lastUpdate = new Date();
-            newData.lastDataReceived = dataReceivedAt;
-            newData.isConnected = serverOnline;
+            // Zone is online if we got fresh data and it's not stale
+            newData.status[1] = serverStatus.isOnline && !dataIsStale;
+            newData.lastUpdate = new Date(zoneResponse.received_at);
+            newData.isConnected = serverStatus.isOnline;
             
             return newData;
           });
         } else if (isActive) {
-          // No new data available - check if existing data is stale
-          setData(prevData => {
-            const isDataStale = checkDataTimeout(prevData.lastDataReceived);
-            
-            return {
-              ...prevData,
-              status: { 1: !isDataStale }, // Only online if data isn't stale
-              lastUpdate: new Date(),
-              isConnected: serverOnline
-            };
-          });
+          // No data available from NodeMCU
+          setData(prevData => ({
+            ...prevData,
+            status: { 1: false }, // NodeMCU is offline
+            isConnected: serverStatus.isOnline // Server might still be online
+          }));
         }
       } catch (error) {
         console.error('Error updating data:', error);
         if (isActive) {
           setData(prevData => ({
             ...prevData,
-            status: { 1: false },
-            lastUpdate: new Date(),
-            isConnected: false
+            status: { 1: false }, // NodeMCU is offline
+            isConnected: false // Server is also offline
           }));
         }
       }
     };
 
-    // Function to periodically check for stale data (even without new requests)
-    const checkStaleData = () => {
-      if (!isActive) return;
-      
-      setData(prevData => {
-        const isDataStale = checkDataTimeout(prevData.lastDataReceived);
-        
-        // Only update if status needs to change
-        if (prevData.status[1] && isDataStale) {
-          console.warn('ESP32 data timeout detected - marking as offline');
-          return {
-            ...prevData,
-            status: { 1: false },
-            lastUpdate: new Date()
-          };
-        }
-        
-        return prevData;
-      });
-    };
-
     // Initial fetch
     updateData();
 
-    // Set up interval for real-time updates
-    const updateInterval = setInterval(updateData, POLL_INTERVAL_MS);
-    
-    // Set up interval for timeout checks (more frequent to be responsive)
-    const timeoutCheckInterval = setInterval(checkStaleData, 2000);
+    // Set up interval for real-time updates every 3 seconds
+    const interval = setInterval(updateData, 3000);
 
     return () => {
       isActive = false;
-      clearInterval(updateInterval);
-      clearInterval(timeoutCheckInterval);
+      clearInterval(interval);
     };
   }, []);
 

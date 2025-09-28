@@ -27,26 +27,26 @@ export function DashboardHeader({ isConnected, lastUpdate, hasAlerts }: Dashboar
             Microgrid Monitoring System
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Real-time IoT Energy Monitoring – Zones 1 to 3
+            Real-time IoT Energy Monitoring – NodeMCU Zone 1
           </p>
         </div>
 
         {/* Status Indicators */}
         <div className="flex items-center gap-4">
-          {/* MQTT/WiFi Status */}
+          {/* MQTT/Server Status */}
           <div className="flex items-center gap-2">
             {isConnected ? (
               <>
                 <Wifi className="w-4 h-4 text-status-online" />
                 <Badge variant="secondary" className="bg-status-online/20 text-status-online border-status-online/30">
-                  MQTT Connected
+                  Server Online
                 </Badge>
               </>
             ) : (
               <>
                 <WifiOff className="w-4 h-4 text-status-offline" />
                 <Badge variant="destructive">
-                  Connection Lost
+                  Server Offline
                 </Badge>
               </>
             )}
@@ -65,7 +65,7 @@ export function DashboardHeader({ isConnected, lastUpdate, hasAlerts }: Dashboar
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-status-warning animate-pulse" />
               <Badge variant="secondary" className="bg-status-warning/20 text-status-warning border-status-warning/30">
-                ESP32 Offline
+                {!isConnected ? "Server Down" : "NodeMCU Disconnected"}
               </Badge>
             </div>
           )}

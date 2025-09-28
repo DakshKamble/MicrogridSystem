@@ -32,13 +32,8 @@ export function ZoneCard({ zoneId, name, nodeName, data, isOnline }: ZoneCardPro
     3: "bg-[var(--gradient-zone-3)]"
   };
 
-  // Apply opacity and different styling when offline
-  const cardStyle = isOnline 
-    ? `p-6 border-border/50 backdrop-blur-sm ${gradientMap[zoneId]}`
-    : `p-6 border-destructive/30 backdrop-blur-sm bg-destructive/5 opacity-75`;
-
   return (
-    <Card className={`${cardStyle} relative`}>
+    <Card className={`p-6 border-border/50 backdrop-blur-sm ${gradientMap[zoneId]}`}>
       {/* Zone Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -53,25 +48,13 @@ export function ZoneCard({ zoneId, name, nodeName, data, isOnline }: ZoneCardPro
         </Badge>
       </div>
 
-      {/* Offline Overlay */}
-      {!isOnline && (
-        <div className="absolute inset-0 bg-destructive/10 backdrop-blur-[1px] rounded-lg flex items-center justify-center">
-          <div className="text-center p-4">
-            <div className="text-4xl mb-2">📶</div>
-            <div className="text-destructive font-semibold">ESP32 Disconnected</div>
-            <div className="text-sm text-muted-foreground mt-1">No data received for 15+ seconds</div>
-            <div className="text-xs text-muted-foreground mt-2">Showing last known values</div>
-          </div>
-        </div>
-      )}
-
       {/* Energy Gauges */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         <EnergyGauge
           title="Current"
           value={data.current}
-          unit="mA"
-          max={3000}
+          unit="A"
+          max={3}
           icon="🔋"
           color={zoneColor}
         />
@@ -79,15 +62,15 @@ export function ZoneCard({ zoneId, name, nodeName, data, isOnline }: ZoneCardPro
           title="Voltage"
           value={data.voltage}
           unit="V"
-          max={12}
+          max={30}
           icon="🔌"
           color={zoneColor}
         />
         <EnergyGauge
           title="Power"
           value={data.power}
-          unit="mW"
-          max={15000}
+          unit="W"
+          max={20}
           icon="⚡"
           color={zoneColor}
         />

@@ -1,7 +1,12 @@
-# FastAPI server dependencies for Microgrid MQTT monitoring system
-fastapi>=0.104.1
-uvicorn[standard]>=0.24.0
-paho-mqtt>=1.6.1
+# Microgrid Dashboard System - Python Dependencies
+# Install with: pip install -r requirements.txt
 
-# Additional dependencies that may be useful for development
-python-multipart>=0.0.6
+# FastAPI and ASGI server
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# MQTT client library
+paho-mqtt==1.6.1
+
+# Additional useful packages for production
+python-multipart==0.0.6
